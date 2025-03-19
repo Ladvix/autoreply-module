@@ -1,3 +1,4 @@
+import random
 from . import chat
 from pyrogram import Client, filters
 from string import Template
@@ -38,8 +39,9 @@ def launch(bot, module_name):
             with open(dirs.MODULES_PATH + module_name + '/templates/success.html', encoding='utf-8') as f:
                 message.edit(f.read())
     
-    @bot.app.on_message(group=1)
+    @bot.app.on_message(group=random.randint(1, 9999))
     def on_message(client, message):
+        print(message.text)
         for i in config['chats']:
             if str(message.from_user.id) == str(i) and message.from_user.id != client.me.id:
                 try:
@@ -54,5 +56,5 @@ def launch(bot, module_name):
                     response = subconscious.stream(prompt, subconscious)
                     
                     message.reply(response)
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
