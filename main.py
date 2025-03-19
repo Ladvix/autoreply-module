@@ -38,7 +38,7 @@ def launch(bot, module_name):
             with open(dirs.MODULES_PATH + module_name + '/templates/success.html', encoding='utf-8') as f:
                 message.edit(f.read())
     
-    @bot.app.on_message(filters.private)
+    @bot.app.on_message(group=1)
     def on_message(client, message):
         for i in config['chats']:
             if str(message.from_user.id) == str(i) and message.from_user.id != client.me.id:
