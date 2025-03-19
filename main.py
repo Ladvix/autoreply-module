@@ -41,7 +41,6 @@ def launch(bot, module_name):
     
     @bot.app.on_message(group=random.randint(1, 9999))
     def on_message(client, message):
-        print(message.text)
         for i in config['chats']:
             if str(message.from_user.id) == str(i) and message.from_user.id != client.me.id:
                 try:
