@@ -55,5 +55,5 @@ def launch(bot, module_name):
                     response = subconscious.stream(prompt, subconscious)
                     
                     message.reply(response)
-                except Exception as e:
-                    print(e)
+                except:
+                    pass
