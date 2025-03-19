@@ -5,6 +5,14 @@ from string import Template
 from utils import dirs, json_helper
 
 
+def set_prompt(message, template):
+    return f'''
+    Ты автоответчик, твоего собеседника зовут {message.from_user.first_name}
+    Тебе задали следующую инструкцию: {template}. Пришло сообщение: {message.text}, твой собеседник ждет ответа!
+    Как бы ты ответил на данное сообщение?
+    Если тебя спросят кто ты, отвечай, что ты - автоответчик
+    '''
+
 def launch(bot, module_name):
     config = json_helper.read(dirs.MODULES_PATH + module_name + '/config.json')
 
@@ -42,18 +50,14 @@ def launch(bot, module_name):
     @bot.app.on_message(group=random.randint(1, 9999))
     def on_message(client, message):
         for i in config['chats']:
-            if str(message.from_user.id) == str(i) and message.from_user.id != client.me.id:
-                try:
+            if message.from_user.id != client.me.id:
+                if str(message.from_user.id) == str(i):
                     template = config['chats'][str(message.from_user.id)]['prompt']
-                    prompt = f'''
-                    Ты автоответчик, твоего собеседника зовут {message.from_user.first_name}
-                    Тебе задали следующую инструкцию: {template}. Пришло сообщение: {message.text}, твой собеседник ждет ответа!
-                    Как бы ты ответил на данное сообщение?
-                    Если тебя спросят кто ты, отвечай, что ты - автоответчик
-                    '''
+                    response = subconscious.stream(set_prompt(message, template), subconscious)
 
-                    response = subconscious.stream(prompt, subconscious)
-                    
                     message.reply(response)
-                except:
-                    pass
+                elif str(message.chat.id) == str(i):
+                    template = config['chats'][str(message.chat.id)]['prompt']
+                    response = subconscious.stream(set_prompt(message, template), subconscious)
+
+                    message.reply(response)
